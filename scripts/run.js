@@ -1,5 +1,5 @@
 const main = async () => {
-  const [owner, randomPerson, deployer] = await hre.ethers.getSigners();
+  const [owner] = await hre.ethers.getSigners();
   const weebContractFactory = await hre.ethers.getContractFactory("WeebPortal");
   const weebContract = await weebContractFactory.deploy();
   await weebContract.deployed();
@@ -10,10 +10,14 @@ const main = async () => {
   let waveCount;
   waveCount = await weebContract.getTotalWaves();
 
-  let waveInc = await weebContract.wave();
+  let waveInc = await weebContract.wave("hlo user1");
   await waveInc.wait();
 
+  const [_, randomPerson] = await hre.ethers.getSigners();
+  waveTxn = await weebContract.connect(randomPerson).wave("Another message!");
+
   waveCount = await weebContract.getTotalWaves();
+  console.log(waveCount);
 };
 
 const runMain = async () => {
