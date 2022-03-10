@@ -6,7 +6,9 @@ const main = async () => {
   console.log("Account balance: ", accountBalance.toString());
 
   const weebContractFactory = await hre.ethers.getContractFactory("WeebPortal");
-  const weebContract = await weebContractFactory.deploy();
+  const weebContract = await weebContractFactory.deploy({
+    value: hre.ethers.utils.parseEther("0.0001"),
+  });
   await weebContract.deployed();
 
   console.log("weebPortal address: ", weebContract.address);

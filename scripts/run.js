@@ -1,20 +1,38 @@
 const main = async () => {
   const [owner] = await hre.ethers.getSigners();
   const weebContractFactory = await hre.ethers.getContractFactory("WeebPortal");
-  const weebContract = await weebContractFactory.deploy();
+  const weebContract = await weebContractFactory.deploy({
+    value: hre.ethers.utils.parseEther("0.01"),
+  });
   await weebContract.deployed();
 
   console.log("Contract deployed to: ", weebContract.address);
   console.log("Contract deployed by :", owner.address);
 
+  let contractBalance = await hre.ethers.provider.getBalance(
+    weebContract.address
+  );
+
+  console.log(
+    "Contract balance : ",
+    hre.ethers.utils.formatEther(contractBalance)
+  );
+
   let waveCount;
-  waveCount = await weebContract.getTotalWaves();
 
-  let waveInc = await weebContract.wave("hlo user1");
-  await waveInc.wait();
+  let waveTxn = await weebContract.wave("hlo user1");
+  await waveTxn.wait();
+  
+  let waveTxn2 = await weebContract.wave("hlo wave2");
+  await waveTxn2.wait();
+  contractBalance = await hre.ethers.provider.getBalance(weebContract.address);
 
-  const [_, randomPerson] = await hre.ethers.getSigners();
-  waveTxn = await weebContract.connect(randomPerson).wave("Another message!");
+  console.log(
+    "Contract balance : ",
+    hre.ethers.utils.formatEther(contractBalance)
+  );
+  // const [_, randomPerson] = await hre.ethers.getSigners();
+  // waveTxn = await weebContract.connect(randomPerson).wave("Another message!");
 
   waveCount = await weebContract.getTotalWaves();
   console.log(waveCount);
